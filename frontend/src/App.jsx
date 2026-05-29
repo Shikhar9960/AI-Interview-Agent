@@ -5,6 +5,7 @@
 // import { motion, AnimatePresence } from "framer-motion";
 
 // function App() {
+
 //   const [role, setRole] = useState("");
 //   const [question, setQuestion] = useState("");
 //   const [answer, setAnswer] = useState("");
@@ -13,303 +14,498 @@
 //   const [loadingQuestion, setLoadingQuestion] = useState(false);
 //   const [loadingFeedback, setLoadingFeedback] = useState(false);
 
+//   const [questionNumber, setQuestionNumber] = useState(1);
+
 //   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
+//   // ===============================
+//   // Generate Question
+//   // ===============================
+
 //   const generateQuestion = async () => {
+
 //     if (!role) return;
+
 //     try {
+
 //       setLoadingQuestion(true);
+
 //       setQuestion("");
 //       setFeedback("");
 //       setAnswer("");
-//       const res = await API.post("/generate-question", { role });
+
+//       resetTranscript();
+
+//       const res = await API.post("/generate-question", {
+//         role,
+//       });
+
 //       setQuestion(res.data.question);
+
 //     } catch (error) {
+
 //       console.log(error);
+
 //     } finally {
+
 //       setLoadingQuestion(false);
 //     }
 //   };
 
+//   // ===============================
+//   // Next Question
+//   // ===============================
+
+//   const nextQuestion = async () => {
+
+//     setQuestionNumber((prev) => prev + 1);
+
+//     setFeedback("");
+//     setAnswer("");
+//     resetTranscript();
+
+//     await generateQuestion();
+//   };
+
+//   // ===============================
+//   // Evaluate Answer
+//   // ===============================
+
 //   const evaluateAnswer = async () => {
+
 //     if (!answer && !transcript) return;
+
 //     try {
+
 //       setLoadingFeedback(true);
+
 //       const res = await API.post("/evaluate-answer", {
 //         question,
 //         answer: answer || transcript,
 //       });
+
 //       setFeedback(res.data.feedback);
+
 //     } catch (error) {
+
 //       console.log(error);
+
 //     } finally {
+
 //       setLoadingFeedback(false);
 //     }
 //   };
 
+//   // ===============================
+//   // Voice Functions
+//   // ===============================
+
 //   const startListening = () => {
+
 //     resetTranscript();
-//     SpeechRecognition.startListening({ continuous: true });
+
+//     SpeechRecognition.startListening({
+//       continuous: true,
+//     });
 //   };
 
 //   const stopListening = () => {
+
 //     SpeechRecognition.stopListening();
+
 //     setAnswer(transcript);
 //   };
 
+//   // ===============================
+//   // Extract Score
+//   // ===============================
+
 //   const scoreMatch = feedback.match(/Score:\s*(\d+)/i);
+
 //   const score = scoreMatch ? scoreMatch[1] : null;
 
 //   return (
+
 //     <>
-//       {/* Injecting a small style block to handle hover states 
-//         since we are purely relying on your index.css variables 
-//       */}
 //       <style>{`
+
 //         .custom-input:focus {
 //           border-color: var(--accent) !important;
 //           box-shadow: 0 0 0 3px var(--accent-bg);
 //         }
+
 //         .primary-btn {
 //           background: var(--accent);
 //           color: #fff;
-//           transition: opacity 0.2s, transform 0.1s;
+//           transition: 0.2s;
 //         }
+
 //         .primary-btn:hover:not(:disabled) {
 //           opacity: 0.9;
-//           transform: translateY(-1px);
+//           transform: translateY(-2px);
 //         }
+
 //         .primary-btn:disabled {
 //           opacity: 0.5;
 //           cursor: not-allowed;
 //         }
+
 //         .icon-btn {
 //           background: var(--code-bg);
 //           border: 1px solid var(--border);
 //           color: var(--text-h);
 //           transition: all 0.2s;
 //         }
+
 //         .icon-btn:hover {
 //           background: var(--border);
 //         }
+
 //         .icon-btn.recording {
 //           background: rgba(239, 68, 68, 0.1);
 //           border-color: rgba(239, 68, 68, 0.5);
 //           color: #ef4444;
 //         }
+
 //         .app-container {
 //           padding: 40px 20px;
 //           display: flex;
 //           flex-direction: column;
 //           gap: 32px;
 //           width: 100%;
-//           max-width: 800px;
+//           max-width: 850px;
 //           margin: 0 auto;
-//           text-align: left;
 //         }
+
 //       `}</style>
 
 //       <div className="app-container">
+
 //         {/* HEADER */}
-//         <div style={{ textAlign: "center", marginBottom: "16px" }}>
+
+//         <div style={{ textAlign: "center" }}>
+
 //           <h1>AI Interview System</h1>
-//           <p>Prepare for your next role with real-time AI feedback.</p>
+
+//           <p>
+//             Practice interviews with AI powered feedback.
+//           </p>
+
 //         </div>
 
 //         {/* ROLE INPUT */}
+
 //         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+
 //           <input
 //             type="text"
 //             className="custom-input"
-//             placeholder="Enter Role (e.g., React Developer)"
+//             placeholder="Enter Role (React Developer)"
 //             value={role}
 //             onChange={(e) => setRole(e.target.value)}
 //             style={{
-//               flex: "1 1 300px",
-//               padding: "16px 20px",
-//               fontSize: "16px",
+//               flex: "1",
+//               padding: "16px",
 //               borderRadius: "12px",
 //               border: "1px solid var(--border)",
 //               background: "var(--bg)",
 //               color: "var(--text-h)",
-//               fontFamily: "var(--sans)",
 //               outline: "none",
-//               boxSizing: "border-box"
 //             }}
 //           />
+
 //           <button
 //             onClick={generateQuestion}
 //             disabled={loadingQuestion || !role}
 //             className="primary-btn"
 //             style={{
-//               padding: "16px 32px",
+//               padding: "16px 30px",
 //               borderRadius: "12px",
 //               border: "none",
-//               fontSize: "16px",
-//               fontWeight: 600,
-//               fontFamily: "var(--sans)",
+//               fontWeight: "600",
 //               cursor: "pointer",
-//               boxShadow: "var(--shadow)",
-//               display: "flex",
-//               alignItems: "center",
-//               justifyContent: "center",
-//               minWidth: "200px"
 //             }}
 //           >
-//             {loadingQuestion ? <TailSpin height="24" width="24" color="#fff" /> : "Generate Question"}
+
+//             {
+//               loadingQuestion
+//                 ? <TailSpin height="22" width="22" color="#fff" />
+//                 : "Generate Question"
+//             }
+
 //           </button>
+
 //         </div>
 
-//         <AnimatePresence mode="wait">
-//           {/* QUESTION CARD */}
-//           {question && !loadingQuestion && (
+//         {/* QUESTION */}
+
+//         <AnimatePresence>
+
+//           {
+//             question && !loadingQuestion && (
+
+//               <motion.div
+//                 initial={{ opacity: 0, y: 10 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 style={{
+//                   background: "var(--accent-bg)",
+//                   border: "1px solid var(--accent-border)",
+//                   borderRadius: "16px",
+//                   padding: "24px",
+//                 }}
+//               >
+
+//                 <div style={{
+//                   display: "flex",
+//                   justifyContent: "space-between",
+//                   alignItems: "center",
+//                   marginBottom: "14px"
+//                 }}>
+
+//                   <h2>
+//                     Question {questionNumber}
+//                   </h2>
+
+//                   <span style={{
+//                     background: "var(--accent)",
+//                     color: "#fff",
+//                     padding: "6px 12px",
+//                     borderRadius: "30px",
+//                     fontSize: "14px"
+//                   }}>
+//                     AI Interview
+//                   </span>
+
+//                 </div>
+
+//                 <p style={{
+//                   lineHeight: "170%",
+//                   fontSize: "18px"
+//                 }}>
+//                   {question}
+//                 </p>
+
+//               </motion.div>
+//             )
+//           }
+
+//         </AnimatePresence>
+
+//         {/* ANSWER */}
+
+//         {
+//           question && (
+
 //             <motion.div
-//               initial={{ opacity: 0, y: 15 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               exit={{ opacity: 0, height: 0 }}
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
 //               style={{
-//                 background: "var(--accent-bg)",
-//                 border: "1px solid var(--accent-border)",
-//                 borderRadius: "16px",
-//                 padding: "24px",
-//                 boxShadow: "var(--shadow)"
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 gap: "18px"
 //               }}
 //             >
-//               <h2>The Challenge</h2>
-//               <p style={{ lineHeight: "160%", color: "var(--text-h)", marginTop: "12px" }}>
-//                 {question}
-//               </p>
-//             </motion.div>
-//           )}
 
-//           {/* ANSWER SECTION */}
-//           {question && (
-//             <motion.div
-//               initial={{ opacity: 0, y: 15 }}
-//               animate={{ opacity: 1, y: 0 }}
-//               style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-//             >
-//               <div style={{ position: "relative" }}>
-//                 <textarea
-//                   className="custom-input"
-//                   rows="6"
-//                   placeholder="Type your answer or use the microphone..."
-//                   value={transcript || answer}
-//                   onChange={(e) => setAnswer(e.target.value)}
-//                   style={{
-//                     width: "100%",
-//                     padding: "20px",
-//                     paddingBottom: "60px",
-//                     fontSize: "16px",
-//                     borderRadius: "16px",
-//                     border: "1px solid var(--border)",
-//                     background: "var(--code-bg)",
-//                     color: "var(--text-h)",
-//                     fontFamily: "var(--sans)",
-//                     outline: "none",
-//                     resize: "vertical",
-//                     boxSizing: "border-box",
-//                     lineHeight: "150%"
-//                   }}
-//                 />
-                
-//                 {/* MIC CONTROLS */}
-//                 <div style={{ position: "absolute", bottom: "16px", right: "16px", display: "flex", gap: "8px", alignItems: "center" }}>
-//                   {listening && (
-//                     <span style={{ color: "#ef4444", fontSize: "14px", fontWeight: 500, marginRight: "8px" }}>
-//                       ● Listening...
-//                     </span>
-//                   )}
-//                   {!listening ? (
+//               <textarea
+//                 className="custom-input"
+//                 rows="6"
+//                 placeholder="Write your answer..."
+//                 value={transcript || answer}
+//                 onChange={(e) => setAnswer(e.target.value)}
+//                 style={{
+//                   width: "100%",
+//                   padding: "20px",
+//                   borderRadius: "16px",
+//                   border: "1px solid var(--border)",
+//                   background: "var(--code-bg)",
+//                   color: "var(--text-h)",
+//                   outline: "none",
+//                   resize: "none",
+//                   lineHeight: "160%"
+//                 }}
+//               />
+
+//               {/* MIC */}
+
+//               <div style={{
+//                 display: "flex",
+//                 gap: "12px",
+//                 alignItems: "center"
+//               }}>
+
+//                 {
+//                   !listening ? (
+
 //                     <button
 //                       onClick={startListening}
 //                       className="icon-btn"
-//                       style={{ padding: "10px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: 500 }}
+//                       style={{
+//                         padding: "12px 18px",
+//                         borderRadius: "10px",
+//                         cursor: "pointer"
+//                       }}
 //                     >
 //                       🎤 Start
 //                     </button>
+
 //                   ) : (
+
 //                     <button
 //                       onClick={stopListening}
 //                       className="icon-btn recording"
-//                       style={{ padding: "10px 16px", borderRadius: "8px", cursor: "pointer", fontWeight: 500 }}
+//                       style={{
+//                         padding: "12px 18px",
+//                         borderRadius: "10px",
+//                         cursor: "pointer"
+//                       }}
 //                     >
 //                       ⏹ Stop
 //                     </button>
-//                   )}
-//                 </div>
+//                   )
+//                 }
+
+//                 {
+//                   listening && (
+//                     <span style={{
+//                       color: "#ef4444",
+//                       fontWeight: "600"
+//                     }}>
+//                       Listening...
+//                     </span>
+//                   )
+//                 }
+
 //               </div>
+
+//               {/* SUBMIT */}
 
 //               <button
 //                 onClick={evaluateAnswer}
 //                 disabled={loadingFeedback || (!answer && !transcript)}
 //                 className="primary-btn"
 //                 style={{
-//                   padding: "18px 24px",
-//                   borderRadius: "12px",
+//                   padding: "18px",
+//                   borderRadius: "14px",
 //                   border: "none",
-//                   fontSize: "18px",
-//                   fontWeight: 600,
-//                   fontFamily: "var(--sans)",
-//                   cursor: "pointer",
-//                   boxShadow: "var(--shadow)",
-//                   display: "flex",
-//                   alignItems: "center",
-//                   justifyContent: "center",
-//                   width: "100%"
+//                   fontWeight: "700",
+//                   fontSize: "17px",
+//                   cursor: "pointer"
 //                 }}
 //               >
-//                 {loadingFeedback ? <TailSpin height="28" width="28" color="#fff" /> : "Submit Answer"}
-//               </button>
-//             </motion.div>
-//           )}
 
-//           {/* FEEDBACK CARD */}
-//           {feedback && !loadingFeedback && (
+//                 {
+//                   loadingFeedback
+//                     ? <TailSpin height="26" width="26" color="#fff" />
+//                     : "Submit Answer"
+//                 }
+
+//               </button>
+
+//             </motion.div>
+//           )
+//         }
+
+//         {/* FEEDBACK */}
+
+//         {
+//           feedback && !loadingFeedback && (
+
 //             <motion.div
-//               initial={{ opacity: 0, y: 20 }}
-//               animate={{ opacity: 1, y: 0 }}
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
 //               style={{
 //                 background: "var(--bg)",
 //                 border: "1px solid var(--border)",
-//                 borderRadius: "16px",
-//                 padding: "32px",
-//                 boxShadow: "var(--shadow)",
-//                 marginTop: "16px"
+//                 borderRadius: "18px",
+//                 padding: "30px"
 //               }}
 //             >
-//               <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", flexWrap: "wrap" }}>
-                
-//                 {/* SCORE BUBBLE */}
-//                 {score && (
-//                   <div style={{
-//                     display: "flex",
-//                     flexDirection: "column",
-//                     alignItems: "center",
-//                     justifyContent: "center",
-//                     background: "var(--accent-bg)",
-//                     border: "1px solid var(--accent-border)",
-//                     borderRadius: "50%",
-//                     width: "100px",
-//                     height: "100px",
-//                     flexShrink: 0
-//                   }}>
-//                     <span style={{ fontSize: "12px", textTransform: "uppercase", fontWeight: 600, color: "var(--accent)" }}>Score</span>
-//                     <h2 style={{ margin: 0, color: "var(--text-h)", fontSize: "32px" }}>{score}</h2>
-//                   </div>
-//                 )}
+
+//               <div style={{
+//                 display: "flex",
+//                 gap: "24px",
+//                 flexWrap: "wrap"
+//               }}>
+
+//                 {/* SCORE */}
+
+//                 {
+//                   score && (
+
+//                     <div style={{
+//                       width: "110px",
+//                       height: "110px",
+//                       borderRadius: "50%",
+//                       background: "var(--accent-bg)",
+//                       border: "1px solid var(--accent-border)",
+//                       display: "flex",
+//                       flexDirection: "column",
+//                       alignItems: "center",
+//                       justifyContent: "center"
+//                     }}>
+
+//                       <span style={{
+//                         fontSize: "13px",
+//                         color: "var(--accent)"
+//                       }}>
+//                         SCORE
+//                       </span>
+
+//                       <h2 style={{
+//                         margin: 0
+//                       }}>
+//                         {score}/10
+//                       </h2>
+
+//                     </div>
+//                   )
+//                 }
 
 //                 {/* FEEDBACK TEXT */}
-//                 <div style={{ flex: 1, minWidth: "250px" }}>
-//                   <h2 style={{ color: "var(--accent)", marginBottom: "12px" }}>AI Analysis</h2>
-//                   <p style={{ whiteSpace: "pre-wrap", lineHeight: "160%", color: "var(--text-h)" }}>
+
+//                 <div style={{ flex: 1 }}>
+
+//                   <h2 style={{
+//                     color: "var(--accent)",
+//                     marginBottom: "12px"
+//                   }}>
+//                     AI Feedback
+//                   </h2>
+
+//                   <p style={{
+//                     whiteSpace: "pre-wrap",
+//                     lineHeight: "170%"
+//                   }}>
 //                     {feedback.replace(/Score:\s*\d+\/10/i, "").trim()}
 //                   </p>
+
 //                 </div>
+
 //               </div>
+
+//               {/* NEXT QUESTION */}
+
+//               <button
+//                 onClick={nextQuestion}
+//                 className="primary-btn"
+//                 style={{
+//                   marginTop: "30px",
+//                   width: "100%",
+//                   padding: "18px",
+//                   borderRadius: "14px",
+//                   border: "none",
+//                   fontWeight: "700",
+//                   fontSize: "17px",
+//                   cursor: "pointer"
+//                 }}
+//               >
+//                 Next Question →
+//               </button>
+
 //             </motion.div>
-//           )}
-//         </AnimatePresence>
+//           )
+//         }
+
 //       </div>
 //     </>
 //   );
@@ -319,9 +515,13 @@
 
 
 
+
+
 import { useState } from "react";
 import API from "./api/api";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { TailSpin } from "react-loader-spinner";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -337,7 +537,11 @@ function App() {
 
   const [questionNumber, setQuestionNumber] = useState(1);
 
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+  } = useSpeechRecognition();
 
   // ===============================
   // Generate Question
@@ -383,6 +587,7 @@ function App() {
 
     setFeedback("");
     setAnswer("");
+
     resetTranscript();
 
     await generateQuestion();
@@ -443,12 +648,24 @@ function App() {
 
   const scoreMatch = feedback.match(/Score:\s*(\d+)/i);
 
-  const score = scoreMatch ? scoreMatch[1] : null;
+  const score = scoreMatch
+    ? scoreMatch[1]
+    : null;
 
   return (
 
     <>
       <style>{`
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+        }
 
         .custom-input:focus {
           border-color: var(--accent) !important;
@@ -498,6 +715,102 @@ function App() {
           margin: 0 auto;
         }
 
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 768px) {
+
+          .app-container {
+            padding: 24px 16px;
+            gap: 24px;
+          }
+
+          h1 {
+            font-size: 30px !important;
+          }
+
+          h2 {
+            font-size: 22px !important;
+          }
+
+          p {
+            font-size: 15px !important;
+          }
+
+          textarea,
+          input {
+            font-size: 15px !important;
+          }
+
+          .role-container {
+            flex-direction: column;
+          }
+
+          .role-container button {
+            width: 100%;
+          }
+
+          .feedback-container {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+
+          .question-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+          }
+
+          .mic-controls {
+            flex-direction: column;
+            align-items: stretch !important;
+          }
+
+          .mic-controls button {
+            width: 100%;
+          }
+
+          .submit-btn,
+          .next-btn {
+            width: 100%;
+          }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 480px) {
+
+          .app-container {
+            padding: 18px 12px;
+            gap: 20px;
+          }
+
+          h1 {
+            font-size: 24px !important;
+          }
+
+          h2 {
+            font-size: 18px !important;
+          }
+
+          p {
+            font-size: 14px !important;
+            line-height: 160% !important;
+          }
+
+          textarea {
+            padding: 16px !important;
+          }
+
+          .score-circle {
+            width: 90px !important;
+            height: 90px !important;
+          }
+        }
+
       `}</style>
 
       <div className="app-container">
@@ -506,7 +819,9 @@ function App() {
 
         <div style={{ textAlign: "center" }}>
 
-          <h1>AI Interview System</h1>
+          <h1>
+            AI Interview System
+          </h1>
 
           <p>
             Practice interviews with AI powered feedback.
@@ -516,7 +831,14 @@ function App() {
 
         {/* ROLE INPUT */}
 
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <div
+          className="role-container"
+          style={{
+            display: "flex",
+            gap: "12px",
+            flexWrap: "wrap",
+          }}
+        >
 
           <input
             type="text"
@@ -525,7 +847,9 @@ function App() {
             value={role}
             onChange={(e) => setRole(e.target.value)}
             style={{
-              flex: "1",
+              flex: "1 1 300px",
+              minWidth: "0",
+              width: "100%",
               padding: "16px",
               borderRadius: "12px",
               border: "1px solid var(--border)",
@@ -545,12 +869,19 @@ function App() {
               border: "none",
               fontWeight: "600",
               cursor: "pointer",
+              minWidth: "200px",
             }}
           >
 
             {
               loadingQuestion
-                ? <TailSpin height="22" width="22" color="#fff" />
+                ? (
+                  <TailSpin
+                    height="22"
+                    width="22"
+                    color="#fff"
+                  />
+                )
                 : "Generate Question"
             }
 
@@ -576,33 +907,43 @@ function App() {
                 }}
               >
 
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "14px"
-                }}>
+                <div
+                  className="question-header"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "14px",
+                    gap: "12px",
+                    flexWrap: "wrap",
+                  }}
+                >
 
                   <h2>
                     Question {questionNumber}
                   </h2>
 
-                  <span style={{
-                    background: "var(--accent)",
-                    color: "#fff",
-                    padding: "6px 12px",
-                    borderRadius: "30px",
-                    fontSize: "14px"
-                  }}>
+                  <span
+                    style={{
+                      background: "var(--accent)",
+                      color: "#fff",
+                      padding: "6px 12px",
+                      borderRadius: "30px",
+                      fontSize: "14px",
+                    }}
+                  >
                     AI Interview
                   </span>
 
                 </div>
 
-                <p style={{
-                  lineHeight: "170%",
-                  fontSize: "18px"
-                }}>
+                <p
+                  style={{
+                    lineHeight: "170%",
+                    fontSize: "18px",
+                    wordBreak: "break-word",
+                  }}
+                >
                   {question}
                 </p>
 
@@ -623,7 +964,7 @@ function App() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "18px"
+                gap: "18px",
               }}
             >
 
@@ -642,17 +983,20 @@ function App() {
                   color: "var(--text-h)",
                   outline: "none",
                   resize: "none",
-                  lineHeight: "160%"
+                  lineHeight: "160%",
                 }}
               />
 
               {/* MIC */}
 
-              <div style={{
-                display: "flex",
-                gap: "12px",
-                alignItems: "center"
-              }}>
+              <div
+                className="mic-controls"
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  alignItems: "center",
+                }}
+              >
 
                 {
                   !listening ? (
@@ -663,7 +1007,8 @@ function App() {
                       style={{
                         padding: "12px 18px",
                         borderRadius: "10px",
-                        cursor: "pointer"
+                        cursor: "pointer",
+                        border: "1px solid var(--border)",
                       }}
                     >
                       🎤 Start
@@ -677,7 +1022,7 @@ function App() {
                       style={{
                         padding: "12px 18px",
                         borderRadius: "10px",
-                        cursor: "pointer"
+                        cursor: "pointer",
                       }}
                     >
                       ⏹ Stop
@@ -687,10 +1032,13 @@ function App() {
 
                 {
                   listening && (
-                    <span style={{
-                      color: "#ef4444",
-                      fontWeight: "600"
-                    }}>
+
+                    <span
+                      style={{
+                        color: "#ef4444",
+                        fontWeight: "600",
+                      }}
+                    >
                       Listening...
                     </span>
                   )
@@ -702,21 +1050,30 @@ function App() {
 
               <button
                 onClick={evaluateAnswer}
-                disabled={loadingFeedback || (!answer && !transcript)}
-                className="primary-btn"
+                disabled={
+                  loadingFeedback ||
+                  (!answer && !transcript)
+                }
+                className="primary-btn submit-btn"
                 style={{
                   padding: "18px",
                   borderRadius: "14px",
                   border: "none",
                   fontWeight: "700",
                   fontSize: "17px",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
 
                 {
                   loadingFeedback
-                    ? <TailSpin height="26" width="26" color="#fff" />
+                    ? (
+                      <TailSpin
+                        height="26"
+                        width="26"
+                        color="#fff"
+                      />
+                    )
                     : "Submit Answer"
                 }
 
@@ -738,43 +1095,50 @@ function App() {
                 background: "var(--bg)",
                 border: "1px solid var(--border)",
                 borderRadius: "18px",
-                padding: "30px"
+                padding: "30px",
               }}
             >
 
-              <div style={{
-                display: "flex",
-                gap: "24px",
-                flexWrap: "wrap"
-              }}>
+              <div
+                className="feedback-container"
+                style={{
+                  display: "flex",
+                  gap: "24px",
+                  flexWrap: "wrap",
+                }}
+              >
 
                 {/* SCORE */}
 
                 {
                   score && (
 
-                    <div style={{
-                      width: "110px",
-                      height: "110px",
-                      borderRadius: "50%",
-                      background: "var(--accent-bg)",
-                      border: "1px solid var(--accent-border)",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}>
+                    <div
+                      className="score-circle"
+                      style={{
+                        width: "110px",
+                        height: "110px",
+                        borderRadius: "50%",
+                        background: "var(--accent-bg)",
+                        border: "1px solid var(--accent-border)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
 
-                      <span style={{
-                        fontSize: "13px",
-                        color: "var(--accent)"
-                      }}>
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          color: "var(--accent)",
+                        }}
+                      >
                         SCORE
                       </span>
 
-                      <h2 style={{
-                        margin: 0
-                      }}>
+                      <h2 style={{ margin: 0 }}>
                         {score}/10
                       </h2>
 
@@ -784,20 +1148,34 @@ function App() {
 
                 {/* FEEDBACK TEXT */}
 
-                <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    flex: 1,
+                    minWidth: "0",
+                  }}
+                >
 
-                  <h2 style={{
-                    color: "var(--accent)",
-                    marginBottom: "12px"
-                  }}>
+                  <h2
+                    style={{
+                      color: "var(--accent)",
+                      marginBottom: "12px",
+                    }}
+                  >
                     AI Feedback
                   </h2>
 
-                  <p style={{
-                    whiteSpace: "pre-wrap",
-                    lineHeight: "170%"
-                  }}>
-                    {feedback.replace(/Score:\s*\d+\/10/i, "").trim()}
+                  <p
+                    style={{
+                      whiteSpace: "pre-wrap",
+                      lineHeight: "170%",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {
+                      feedback
+                        .replace(/Score:\s*\d+\/10/i, "")
+                        .trim()
+                    }
                   </p>
 
                 </div>
@@ -808,7 +1186,7 @@ function App() {
 
               <button
                 onClick={nextQuestion}
-                className="primary-btn"
+                className="primary-btn next-btn"
                 style={{
                   marginTop: "30px",
                   width: "100%",
@@ -817,7 +1195,7 @@ function App() {
                   border: "none",
                   fontWeight: "700",
                   fontSize: "17px",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
               >
                 Next Question →
